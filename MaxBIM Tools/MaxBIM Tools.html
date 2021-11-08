@@ -9,19 +9,21 @@
 <h1>물량산출표 작성 프로그램</h1>
 <form>
     <div>
-        <label>1. 파일열기</label> <input id="file_uploads" type="file" accept="text/plain" multiple>
+        <label>1. 파일열기</label> <input id="file" type="file" accept="text/plain" multiple>
     </div>
     <div>
-        <label>2. 제목</label> <input id="title" type="text">
+        <label>2. 제목</label> <input id="title" type="text" required>
     </div>
     <div>
-        <label>3. 날짜</label> <input id="date" type="date">
+        <label>3. 날짜</label> <input id="date" type="date" required>
     </div>
     <div id="preview">
         <p></p>
     </div>
     <div>
-        <button>저장하기</button>
+        <button id="save" type="button">저장하기</button>
+        <!-- 제목, 날짜 정보를 받아와서 엑셀파일을 만들어본다. -->
+
         <!-- 파일 내용을 line-by-line으로 정렬부터 한다. -->
         <!-- 정렬한 결과물을 파일로 재저장한다. -->
         <!-- 재저장한 결과물을 기반으로 파싱을 수행한다. -->

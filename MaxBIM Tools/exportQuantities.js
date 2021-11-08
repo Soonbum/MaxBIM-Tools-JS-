@@ -1,26 +1,59 @@
-const input = document.getElementById ('file_uploads');
-const preview = document.getElementById ('preview');
+// 제목, 날짜 정보를 가져옴
+const fileButton = document.getElementById ("file");
+const titleInput = document.getElementById ("title");
+const dateInput = document.getElementById ("date");
+const saveButton = document.getElementById ("save");
 
-input.addEventListener ('change', showTextFile);
+saveButton.addEventListener ("click", showValue);
 
-function showTextFile () {
-    const selectedFiles = input.files;
-    const list = document.createElement ('ul');
-    preview.appendChild (list);
+function showValue () {
+    console.log (`제목: ${titleInput.value}, 날짜: ${dateInput.value}`);
+
+    const selectedFiles = fileButton.files;
 
     for (const file of selectedFiles) {
-        const listItem = document.createElement ('li');
+        if (file.type == "text/plain") {
+            let reader = new FileReader ();
+            let bodyText = "";
+            reader.onload = function () {
+                bodyText = reader.result;
+            };
+            reader.readAsText (file, "euc-kr");
+            console.log (`파일명: ${file.name}\n`);
+            console.log (bodyText);
+        }
+    }
+}
 
+// 예제: 텍스트 파일 보여주기
+/*
+const input = document.getElementById ('file_uploads');     // input 태그 (file 타입) 가져옴
+const preview = document.getElementById ('preview');        // div 태그 가져옴
+
+input.addEventListener ('change', showTextFile);    // input 태그에 change 이벤트 리스너 부착, change 발생시 showTextFile 실행
+
+function showTextFile () {
+    const selectedFiles = input.files;              // 파일 (여러 개일 수 있음)
+    const list = document.createElement ('ul');     // 목록
+    preview.appendChild (list);
+
+    // 파일마다 체크
+    for (const file of selectedFiles) {
+        const listItem = document.createElement ('li');     // 목록 내 항목
+
+        // 파일 타입이 text/plain일 경우에만 유효함
         if (validFileType (file)) {
             const summary = document.createElement ('div');
             summary.textContent = `파일명 : ${file.name}, 파일 크기 : ${returnFileSize (file.size)}.`;
+
             const textContents = document.createElement ('div');
 
+            // 파일 열자마자 reader의 결과를 textContents의 텍스트로 세트 !!!
             let reader = new FileReader ();
             reader.onload = function () {
                 textContents.innerText = reader.result;
             };
-            reader.readAsText (file, "euc-kr");
+            reader.readAsText (file, "euc-kr");     // file을 인코딩 euc-kr로 읽어들임
 
             listItem.appendChild (summary);
             listItem.appendChild (textContents);
@@ -51,3 +84,4 @@ function returnFileSize (number) {
         return (number / 1048576).toFixed(1) + 'MB';
     }
 }
+*/
