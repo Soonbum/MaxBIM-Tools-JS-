@@ -11,6 +11,11 @@ function saveXLSX () {
 
     const selectedFiles = fileButton.files;
 
+    if (selectedFiles.length == 0) {
+        alert ("중간보고서 txt 파일 선택은 필수입니다.");
+        return;
+    }
+
     for (const file of selectedFiles) {
         if (file.type == "text/plain") {
             // ================================================== 파일명 읽어오기
@@ -20,6 +25,7 @@ function saveXLSX () {
             excelFileName = excelFileName.replace (' - Graphisoft ArchiCAD-64 19', '');
 
             // ================================================== 텍스트 파일 읽어오기
+            let listData;
             let textContents;
             let reader = new FileReader ();
             reader.onload = function (ev) {
@@ -29,22 +35,23 @@ function saveXLSX () {
                 let wb = XLSX.utils.book_new ();    // workbook 생성
                 wb.SheetNames.push ("Sheet 1");     // 시트 생성
                 
-                // 기록할 데이터는 2차원 배열로 입력하면 됨: let wsData = [[],['A1' , 'A2', 'A3'],['B1','B2','B3'],['C1','C2']];  // 예제
-
+                // 기록할 데이터는 2차원 배열로 입력하면 됨, let wsData = [[],['A1' , 'A2', 'A3'],['B1','B2','B3'],['C1','C2']];
                 // 실제 기록할 데이터
-                let wsData = [ [titleInput.value], [], ['','','','','','',dateInput.value], ['구간', '품목', '규격', '길이', '수량', '단위', '비고'] ];
-                wsData.push (['텍스트 1']);
-                wsData.push (['텍스트 2']);
-                // let strArray = textContents.split ('\n');
-                // for (let i=0 ; i < strArray.length ; i++)
-                //     strArray [i] = strArray [i].trim ();
-                // let wsData = [  [strArray [0], strArray [1], strArray [2], strArray [3], strArray [4]],
-                //                 [strArray [5], strArray [6], strArray [7], strArray [8], strArray [9]], ];
+                let wsData = [ [titleInput.value], [], ['','','','','','',dateInput.value], ['구간', '품목', '규격', '길이', '수량', '단위', '비고'] ];     // 헤더
+                let strArr = textContents.split ('\n');
+                for (let i=0 ; i < strArr.length ; i++) {
+                    let smallStrArr = strArr [i].split ('|');
+
+                    for (let j=0 ; j < smallStrArr.length ; j++) {
+                        smallStrArr [j] = smallStrArr [j].trim ();
+                    }
+                    wsData.push (['', smallStrArr [0], smallStrArr [1], smallStrArr [2], smallStrArr [4], smallStrArr [3]]);
+                }
 
                 // 데이터를 엑셀 파일로 저장함
                 let ws = XLSX.utils.aoa_to_sheet (wsData);
                 wb.Sheets ["Sheet 1"] = ws;
-                wb ["Sheets"]["Sheet 1"]["!cols"] = [{wpx: 40}, {wpx: 150}, {wpx: 110}, {wpx: 80}, {wpx: 80}, {wpx: 80}, {wpx: 80}];    // 열 너비 지정
+                wb ["Sheets"]["Sheet 1"]["!cols"] = [{wpx: 40}, {wpx: 170}, {wpx: 130}, {wpx: 70}, {wpx: 70}, {wpx: 70}, {wpx: 70}];    // 열 너비 지정
                 let wbout = XLSX.write (wb, {bookType:'xlsx', type:'binary'});
                 saveAs (new Blob ([s2ab (wbout)], {type:"application/octet-stream"}), excelFileName);
             };

@@ -9,28 +9,19 @@
 <body>
 <h1>물량산출표 작성 프로그램</h1>
 <form>
-    <div>
+    <p>본 프로그램은 MaxBIM 애드온(ArchiCAD 19)의 "선택한 부재 정보 내보내기 (Single 모드)" 기능을 통해 생성된 중간보고서 txt 파일을 필요로 합니다.</p>
+    <p>
         <label>1. 파일열기</label> <input id="file" type="file" accept="text/plain" multiple>
-    </div>
-    <div>
+    </p>
+    <p>
         <label>2. 제목</label> <input id="title" type="text" required>
-    </div>
-    <div>
+    </p>
+    <p>
         <label>3. 날짜</label> <input id="date" type="date" required>
-    </div>
-    <div id="preview">
-        <p></p>
-    </div>
-    <table cellSpacing=0 id="tableData">
-    </table>
-    <div>
+    </p>
+    <p>
         <button id="save" type="button">저장하기</button>
-        <!-- 파일 내용을 line-by-line으로 정렬부터 한다. -->
-        <!-- 정렬한 결과물을 파일로 재저장한다. -->
-        <!-- 재저장한 결과물을 기반으로 파싱을 수행한다. -->
-        <!-- 파싱을 하면서 엑셀파일을 작성한다. -->
-        <!-- 작성한 엑셀파일을 저장할 경로를 선택한다. 그 후 저장! -->
-    </div>
+    </p>
 </form>
 </body>
 <script type="text/javascript" src="exportQuantities.js"></script>
