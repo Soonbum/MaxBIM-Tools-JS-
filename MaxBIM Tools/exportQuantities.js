@@ -25,7 +25,6 @@ function saveXLSX () {
             excelFileName = excelFileName.replace (' - Graphisoft ArchiCAD-64 19', '');
 
             // ================================================== 텍스트 파일 읽어오기
-            let listData;
             let textContents;
             let reader = new FileReader ();
             reader.onload = function (ev) {
@@ -40,12 +39,15 @@ function saveXLSX () {
                 let wsData = [ [titleInput.value], [], ['','','','','','',dateInput.value], ['구간', '품목', '규격', '길이', '수량', '단위', '비고'] ];     // 헤더
                 let strArr = textContents.split ('\n');
                 for (let i=0 ; i < strArr.length ; i++) {
-                    let smallStrArr = strArr [i].split ('|');
+                    // 비어 있는 행은 처리하지 않음
+                    if (strArr [i].length > 12) {
+                        let smallStrArr = strArr [i].split ('|');
 
-                    for (let j=0 ; j < smallStrArr.length ; j++) {
-                        smallStrArr [j] = smallStrArr [j].trim ();
+                        for (let j=0 ; j < smallStrArr.length ; j++) {
+                            smallStrArr [j] = smallStrArr [j].trim ();
+                        }
+                        wsData.push (['', smallStrArr [0], smallStrArr [1], smallStrArr [2], parseInt (smallStrArr [4]), smallStrArr [3]]);     // 수량만 숫자로 변환
                     }
-                    wsData.push (['', smallStrArr [0], smallStrArr [1], smallStrArr [2], smallStrArr [4], smallStrArr [3]]);
                 }
 
                 // 데이터를 엑셀 파일로 저장함
