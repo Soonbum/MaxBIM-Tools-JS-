@@ -34,24 +34,49 @@ function saveXLSX () {
                 let wb = XLSX.utils.book_new ();    // workbook 생성
                 wb.SheetNames.push ("Sheet 1");     // 시트 생성
                 
+                let iBegin;
+                let iEnd;
+                let productName;
+                let merge = [];
+                let validLines;
+
                 // 기록할 데이터는 2차원 배열로 입력하면 됨, let wsData = [[],['A1' , 'A2', 'A3'],['B1','B2','B3'],['C1','C2']];
                 // 실제 기록할 데이터
                 let wsData = [ [titleInput.value], [], ['','','','','','',dateInput.value], ['구간', '품목', '규격', '길이', '수량', '단위', '비고'] ];     // 헤더
                 let strArr = textContents.split ('\n');
                 for (let i=0 ; i < strArr.length ; i++) {
+                    let smallStrArr = strArr [i].split ('|');
+
+                    for (let j=0 ; j < smallStrArr.length ; j++) {
+                        smallStrArr [j] = smallStrArr [j].trim ();
+                    }
+
+                    // 1번째 줄의 품목은 무조건 저장
+                    if (i == 0) {
+                        iBegin = iEnd = i;
+                        productName = smallStrArr [0];
+                    } else {
+                        if (productName === smallStrArr [0]) {
+                            iEnd = i;
+                        } else {
+                            // 셀 병합 정보 추가
+                            merge.push ({ s: { r: iBegin + 4, c: 1 }, e: { r: iEnd + 4, c: 1 } },);     // 품목
+                            merge.push ({ s: { r: iBegin + 4, c: 5 }, e: { r: iEnd + 4, c: 5 } },);     // 단위
+
+                            iBegin = iEnd = i;
+                            productName = smallStrArr [0];
+                        }
+                    }
+
                     // 비어 있는 행은 처리하지 않음
                     if (strArr [i].length > 12) {
-                        let smallStrArr = strArr [i].split ('|');
-
-                        for (let j=0 ; j < smallStrArr.length ; j++) {
-                            smallStrArr [j] = smallStrArr [j].trim ();
-                        }
                         wsData.push (['', smallStrArr [0], smallStrArr [1], smallStrArr [2], parseInt (smallStrArr [4]), smallStrArr [3]]);     // 수량만 숫자로 변환
                     }
                 }
 
                 // 데이터를 엑셀 파일로 저장함
                 let ws = XLSX.utils.aoa_to_sheet (wsData);
+                ws ["!merges"] = merge;
                 wb.Sheets ["Sheet 1"] = ws;
                 wb ["Sheets"]["Sheet 1"]["!cols"] = [{wpx: 40}, {wpx: 170}, {wpx: 130}, {wpx: 70}, {wpx: 70}, {wpx: 70}, {wpx: 70}];    // 열 너비 지정
                 let wbout = XLSX.write (wb, {bookType:'xlsx', type:'binary'});
